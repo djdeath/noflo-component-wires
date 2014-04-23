@@ -1,0 +1,22 @@
+{
+  "name": "noflo-component-wires",
+  "description": "NoFlo component utilities",
+  "keywords": [
+    "noflo",
+    "component",
+    "utilities"
+  ],
+  "author": "Lionel Landwerlin <lionel.g.landwerlin@linux.intel.com>",
+  "version": "0.0.1",
+  "repo": "djdeath/noflo-component-wires",
+  "dependencies": {
+    "noflo/noflo": "*"
+  },
+  "main": "src/index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "json": [
+    "component.json"
+  ]
+}
