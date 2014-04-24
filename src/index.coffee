@@ -34,15 +34,24 @@ exports.gatherInputs = (component, inputs, callback) ->
 exports.recordGroups = (component, input) ->
   component._groups = {}
 
-  component.emitDataWithGroups = (input, output, data) ->
+  component.emitDataWithGroups = (output, groups, data) ->
     port = @outPorts[output]
     return unless port.isAttached()
-    for group in @_groups[input]
+    for group in groups
       port.beginGroup group
     port.send data
-    for group in @_groups[input]
+    for group in groups
       port.endGroup()
     port.disconnect()
+
+  component.getGroups = (input) ->
+    return @_groups[input]
+
+  component.copyGroups = (input) ->
+    r = []
+    for group in @_groups[input]
+      r.push group
+    return r
 
   component._groups[input] = []
   component.inPorts[input].on 'begingroup', (group) ->
