@@ -1,3 +1,4 @@
+#
 exports.forwardGroups = (component, src, dst) ->
   component.inPorts[src].on 'begingroup', (group) ->
     return unless component.outPorts[dst].isAttached()
@@ -9,6 +10,7 @@ exports.forwardGroups = (component, src, dst) ->
     return unless component.outPorts[dst].isConnected()
     component.outPorts[dst].disconnect()
 
+#
 exports.gatherInputs = (component, inputs, callback) ->
   component._inputs = {}
 
@@ -27,3 +29,25 @@ exports.gatherInputs = (component, inputs, callback) ->
 
   for name in inputs
     connectInput component, name
+
+#
+exports.recordGroups = (component, input) ->
+  component._groups = {}
+
+  component.emitDataWithGroups = (input, output, data) ->
+    port = @outPorts[output]
+    return unless port.isAttached()
+    for group in @_groups[input]
+      port.beginGroup group
+    port.send data
+    for group in @_groups[input]
+      port.endGroup()
+    port.disconnect()
+
+  component._groups[input] = []
+  component.inPorts[input].on 'begingroup', (group) ->
+    component._groups[input].push group
+  component.inPorts[input].on 'endgroup', () ->
+    component._groups[input].pop()
+  component.inPorts[input].on 'disconnect', () ->
+    component._groups[input] = []
